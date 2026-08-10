@@ -1,0 +1,26 @@
+.tch-hidden-column,
+[data-tch-hidden="true"] {
+  display: none !important;
+  visibility: collapse !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.dataTables_wrapper .tch-hidden-column,
+.dataTables_wrapper [data-tch-hidden="true"],
+table.dataTable .tch-hidden-column,
+table.dataTable [data-tch-hidden="true"] {
+  display: none !important;
+}
+
+.dataTables_scrollHead .tch-hidden-column,
+.dataTables_scrollBody .tch-hidden-column {
+  display: none !important;
+}

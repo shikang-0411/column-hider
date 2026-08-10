@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Table Column Hider</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Column Rules</h1>
+      <p class="subtitle">Hide table columns by <code>aria-label</code></p>
+    </header>
+
+    <section class="form-section">
+      <h2 id="form-title">Add rule</h2>
+      <form id="rule-form">
+        <input type="hidden" id="rule-id" />
+        <label>
+          Aria-label
+          <input
+            type="text"
+            id="aria-label"
+            placeholder='e.g. "Player" or "Uptime"'
+            required
+          />
+        </label>
+        <label>
+          Match type
+          <select id="match-type">
+            <option value="exact">Exact match</option>
+            <option value="contains">Contains</option>
+          </select>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="enabled" checked />
+          Enabled
+        </label>
+        <div class="form-actions">
+          <button type="submit" id="submit-btn">Add rule</button>
+          <button type="button" id="cancel-btn" class="secondary" hidden>Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="list-section">
+      <div class="list-header">
+        <h2>Active rules</h2>
+        <button type="button" id="reset-btn" class="link" title="Restore default rules">
+          Reset defaults
+        </button>
+      </div>
+      <ul id="rules-list"></ul>
+      <p id="empty-state" class="empty" hidden>No rules yet. Add one above.</p>
+    </section>
+
+    <footer>
+      <button type="button" id="scan-btn">Scan page for column labels</button>
+      <pre id="scan-result" class="scan-result" hidden></pre>
+      <button type="button" id="apply-btn">Re-apply on current tab</button>
+    </footer>
+
+    <script src="popup.js"></script>
+    <script src="popup-tab.js"></script>
+  </body>
+</html>
