@@ -377,9 +377,9 @@
       .replace(/\bmovie\b/gi, "mdata")
       .replace(/\bstreams\b/gi, "sdata")
       .replace(/\bstream\b/gi, "sdata")
-      .replace(/\bepisodes\b/gi, "ee")
-      .replace(/\bepisode\b/gi, "ee")
-      .replace(/\bseries\b/gi, "ss");
+      .replace(/\bepisodes\b/gi, "ee_data")
+      .replace(/\bepisode\b/gi, "ee_data")
+      .replace(/\bseries\b/gi, "ss_data");
   }
 
   function shouldSkipTextNode(node) {
