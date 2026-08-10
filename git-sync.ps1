@@ -15,9 +15,9 @@ param(
 )
 
 function Invoke-GitRetry {
-    param([string[]]$GitArgs, [int]$MaxAttempts = 40, [int]$DelayMs = 500)
+    param([string[]]$GitArgs, [int]$MaxAttempts = 100, [int]$DelayMs = 500)
     for ($i = 0; $i -lt $MaxAttempts; $i++) {
-        & git @GitArgs
+        & git @GitArgs 2>$null | Out-Null
         if ($LASTEXITCODE -eq 0) { return $true }
         Start-Sleep -Milliseconds $DelayMs
     }
