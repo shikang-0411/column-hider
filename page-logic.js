@@ -368,7 +368,10 @@
       .replace(/\bmovies\b/gi, "mdata")
       .replace(/\bmovie\b/gi, "mdata")
       .replace(/\bstreams\b/gi, "sdata")
-      .replace(/\bstream\b/gi, "sdata");
+      .replace(/\bstream\b/gi, "sdata")
+      .replace(/\bepisodes\b/gi, "ee")
+      .replace(/\bepisode\b/gi, "ee")
+      .replace(/\bseries\b/gi, "ss");
   }
 
   function shouldSkipTextNode(node) {
