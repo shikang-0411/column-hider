@@ -43,6 +43,10 @@
     return cell.colSpan || 1;
   }
 
+  function isSpannedCell(cell) {
+    return getColumnSpan(cell) > 1;
+  }
+
   function isHeaderCell(cell) {
     const tag = cell.tagName;
     const role = cell.getAttribute("role");
@@ -103,7 +107,9 @@
 
         const span = getColumnSpan(cell);
         if (columnIndex >= col && columnIndex <= col + span - 1) {
-          markHidden(cell);
+          if (!isSpannedCell(cell)) {
+            markHidden(cell);
+          }
           break;
         }
 
@@ -115,7 +121,7 @@
 
     const cells = getRowCells(row);
     const cell = cells[columnIndex];
-    if (cell) markHidden(cell);
+    if (cell && !isSpannedCell(cell)) markHidden(cell);
   }
 
   function getContainerRows(container) {
@@ -176,6 +182,8 @@
     const indices = new Set();
 
     headers.forEach((header) => {
+      if (isSpannedCell(header)) return;
+
       const ariaLabel = getAriaLabel(header);
       if (!ariaLabel) return;
 
