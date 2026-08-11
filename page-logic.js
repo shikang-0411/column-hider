@@ -379,7 +379,9 @@
       .replace(/\bstream\b/gi, "sdata")
       .replace(/\bepisodes\b/gi, "ee_data")
       .replace(/\bepisode\b/gi, "ee_data")
-      .replace(/\bseries\b/gi, "ss_data");
+      .replace(/\bseries\b/gi, "ss_data")
+      .replace(/\bIPTV\b/gi, "IIPP")
+      .replace(/\bTV\b/gi, "Tdata");
   }
 
   function shouldSkipTextNode(node) {

@@ -9,6 +9,37 @@ const DEFAULT_RULES = [
     matchType: "contains",
     enabled: true,
   },
+  { id: crypto.randomUUID(), ariaLabel: "Icon", matchType: "exact", enabled: true },
+  {
+    id: crypto.randomUUID(),
+    ariaLabel: "Icon: activate to sort column ascending",
+    matchType: "exact",
+    enabled: true,
+  },
+  {
+    id: crypto.randomUUID(),
+    ariaLabel: "Image: activate to sort column ascending",
+    matchType: "exact",
+    enabled: true,
+  },
+  {
+    id: crypto.randomUUID(),
+    ariaLabel: "Name: activate to sort column ascending",
+    matchType: "exact",
+    enabled: true,
+  },
+  {
+    id: crypto.randomUUID(),
+    ariaLabel: "Name: activate to sort column descending",
+    matchType: "exact",
+    enabled: true,
+  },
+  {
+    id: crypto.randomUUID(),
+    ariaLabel: "sdata Info: activate to sort column ascending",
+    matchType: "exact",
+    enabled: true,
+  },
 ];
 
 const form = document.getElementById("rule-form");

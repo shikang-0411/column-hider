@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "HC",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "description": "Hide table columns by aria-label. Manage rules from the extension popup.",
   "permissions": ["storage", "activeTab", "scripting", "webNavigation"],
   "host_permissions": ["<all_urls>"],

@@ -4,6 +4,37 @@ const DEFAULT_RULES = [
   { id: "default-image", ariaLabel: "Image", matchType: "exact", enabled: true },
   { id: "default-player", ariaLabel: "Player", matchType: "exact", enabled: true },
   { id: "default-uptime", ariaLabel: "Uptime", matchType: "contains", enabled: true },
+  { id: "default-icon", ariaLabel: "Icon", matchType: "exact", enabled: true },
+  {
+    id: "default-icon-asc",
+    ariaLabel: "Icon: activate to sort column ascending",
+    matchType: "exact",
+    enabled: true,
+  },
+  {
+    id: "default-image-asc",
+    ariaLabel: "Image: activate to sort column ascending",
+    matchType: "exact",
+    enabled: true,
+  },
+  {
+    id: "default-name-asc",
+    ariaLabel: "Name: activate to sort column ascending",
+    matchType: "exact",
+    enabled: true,
+  },
+  {
+    id: "default-name-desc",
+    ariaLabel: "Name: activate to sort column descending",
+    matchType: "exact",
+    enabled: true,
+  },
+  {
+    id: "default-sdata-info-asc",
+    ariaLabel: "sdata Info: activate to sort column ascending",
+    matchType: "exact",
+    enabled: true,
+  },
 ];
 
 const RETRY_MS = 1500;
