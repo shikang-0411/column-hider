@@ -58,11 +58,5 @@
     "from": "TV",
     "to": "Tdata",
     "enabled": true
-  },
-  {
-    "id": "ea681f37-2a63-439f-8107-0da313e2a47a",
-    "from": "dollars",
-    "to": "$",
-    "enabled": true
   }
 ]
