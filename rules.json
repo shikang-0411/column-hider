@@ -1,55 +1,61 @@
 [
   {
-    "id": "default-image",
+    "id": "41aa3e81-9888-44a1-b528-bb66bdce47a9",
     "ariaLabel": "Image",
     "matchType": "exact",
     "enabled": true
   },
   {
-    "id": "default-player",
+    "id": "7c391f31-be82-46eb-ac93-cbb17aaec22e",
     "ariaLabel": "Player",
     "matchType": "exact",
     "enabled": true
   },
   {
-    "id": "default-uptime",
+    "id": "671c36d7-99b3-4860-86bd-aac3f9c0e0ed",
     "ariaLabel": "Uptime",
     "matchType": "contains",
     "enabled": true
   },
   {
-    "id": "default-icon",
+    "id": "042a9e58-919b-41d4-a02e-e30154bca391",
     "ariaLabel": "Icon",
     "matchType": "exact",
     "enabled": true
   },
   {
-    "id": "default-icon-asc",
+    "id": "822042c0-fd52-40e6-8f71-eb148461defc",
     "ariaLabel": "Icon: activate to sort column ascending",
     "matchType": "exact",
     "enabled": true
   },
   {
-    "id": "default-image-asc",
+    "id": "d7d4cb09-74d8-4f0c-b42e-909fcf67ce94",
     "ariaLabel": "Image: activate to sort column ascending",
     "matchType": "exact",
     "enabled": true
   },
   {
-    "id": "default-name-asc",
+    "id": "51a87f7a-e681-4821-bb99-f4a8dc991f0d",
     "ariaLabel": "Name: activate to sort column ascending",
     "matchType": "exact",
     "enabled": true
   },
   {
-    "id": "default-name-desc",
+    "id": "08372e3e-1de6-4958-b534-b2fdbdeef37a",
     "ariaLabel": "Name: activate to sort column descending",
     "matchType": "exact",
     "enabled": true
   },
   {
-    "id": "default-sdata-info-asc",
+    "id": "2d6431ed-e560-4300-8a6a-7443ed081129",
     "ariaLabel": "sdata Info: activate to sort column ascending",
+    "matchType": "exact",
+    "enabled": true
+  },
+  {
+    "id": "b553a8fa-dfcf-4598-b591-66ef74c2cfd9",
+    "ariaLabel": "my-calendar",
     "matchType": "exact",
     "enabled": true
   }
