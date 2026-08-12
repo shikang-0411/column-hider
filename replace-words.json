@@ -3,66 +3,70 @@
     "id": "rw-movies",
     "from": "movies",
     "to": "mdata",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-movie",
     "from": "movie",
     "to": "mdata",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-streams",
     "from": "streams",
     "to": "sdata",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-stream",
     "from": "stream",
     "to": "sdata",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-episodes",
     "from": "episodes",
     "to": "ee_data",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-episode",
     "from": "episode",
     "to": "ee_data",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-series",
     "from": "series",
     "to": "ss_data",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-iptv",
     "from": "IPTV",
     "to": "IIPP",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-vod",
     "from": "VOD",
     "to": "VD",
+    "matchType": "exact",
     "enabled": true
   },
   {
     "id": "rw-tv",
     "from": "TV",
     "to": "Tdata",
-    "enabled": true
-  },
-  {
-    "id": "rw-dollars",
-    "from": "dollars",
-    "to": "$$$",
+    "matchType": "exact",
     "enabled": true
   }
 ]

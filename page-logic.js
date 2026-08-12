@@ -390,7 +390,11 @@
       if (!from) continue;
 
       const to = entry.to == null ? "" : String(entry.to);
-      result = result.replace(new RegExp(`\\b${escapeRegExp(from)}\\b`, "gi"), to);
+      const pattern =
+        entry.matchType === "contains"
+          ? escapeRegExp(from)
+          : `\\b${escapeRegExp(from)}\\b`;
+      result = result.replace(new RegExp(pattern, "gi"), to);
     }
 
     return result;

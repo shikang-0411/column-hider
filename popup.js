@@ -23,6 +23,7 @@ const replaceFormBody = document.getElementById("replace-form-body");
 const replaceForm = document.getElementById("replace-form");
 const replaceFromInput = document.getElementById("replace-from");
 const replaceToInput = document.getElementById("replace-to");
+const replaceMatchTypeInput = document.getElementById("replace-match-type");
 const replaceEnabledInput = document.getElementById("replace-enabled");
 const replaceExportBtn = document.getElementById("replace-export-btn");
 
@@ -274,6 +275,7 @@ replaceExportBtn.addEventListener("click", () => {
 function resetReplaceForm() {
   replaceFromInput.value = "";
   replaceToInput.value = "";
+  replaceMatchTypeInput.value = "exact";
   replaceEnabledInput.checked = true;
 }
 
@@ -288,6 +290,7 @@ replaceForm.addEventListener("submit", async (event) => {
     id: crypto.randomUUID(),
     from,
     to,
+    matchType: replaceMatchTypeInput.value,
     enabled: replaceEnabledInput.checked,
   });
 
