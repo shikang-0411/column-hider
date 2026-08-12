@@ -10,7 +10,6 @@
         id: entry.id || crypto.randomUUID(),
         from: entry.from.trim(),
         to: entry.to == null ? "" : String(entry.to),
-        matchType: entry.matchType === "contains" ? "contains" : "exact",
         enabled: entry.enabled !== false,
       }));
   }

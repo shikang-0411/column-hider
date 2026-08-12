@@ -379,22 +379,24 @@
     activeReplaceWords = Array.isArray(entries) ? entries : [];
   }
 
+  function getOrderedReplaceEntries(entries) {
+    return (Array.isArray(entries) ? entries : [])
+      .filter((entry) => entry && entry.enabled !== false)
+      .map((entry) => ({
+        from: String(entry.from || "").trim(),
+        to: entry.to == null ? "" : String(entry.to),
+      }))
+      .filter((entry) => entry.from)
+      .sort((a, b) => b.from.length - a.from.length);
+  }
+
   function replaceWords(text, entries = activeReplaceWords) {
     if (!text) return text;
 
     let result = text;
-    for (const entry of entries) {
-      if (!entry || entry.enabled === false) continue;
-
-      const from = String(entry.from || "").trim();
-      if (!from) continue;
-
-      const to = entry.to == null ? "" : String(entry.to);
-      const pattern =
-        entry.matchType === "contains"
-          ? escapeRegExp(from)
-          : `\\b${escapeRegExp(from)}\\b`;
-      result = result.replace(new RegExp(pattern, "gi"), to);
+    for (const entry of getOrderedReplaceEntries(entries)) {
+      // Contains match: "stream" also replaces inside "streaming".
+      result = result.replace(new RegExp(escapeRegExp(entry.from), "gi"), entry.to);
     }
 
     return result;
