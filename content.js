@@ -5,13 +5,10 @@
   }
   globalThis.__TCH_CONTENT_BOOTSTRAPPED__ = true;
 
-  const STORAGE_KEY = "columnRules";
-
-  const DEFAULT_RULES = [
-    { id: "default-image", ariaLabel: "Image", matchType: "exact", enabled: true },
-    { id: "default-player", ariaLabel: "Player", matchType: "exact", enabled: true },
-    { id: "default-uptime", ariaLabel: "Uptime", matchType: "contains", enabled: true },
-  ];
+  const store = globalThis.TCH_RULES_STORE;
+  const replaceWordsStore = globalThis.TCH_REPLACE_WORDS_STORE;
+  const STORAGE_KEY = store.STORAGE_KEY;
+  const REPLACE_WORDS_STORAGE_KEY = replaceWordsStore.STORAGE_KEY;
 
   const RETRY_MS = 1500;
   const RETRY_MAX = 20;
@@ -22,6 +19,7 @@
   let readyRetryTimer = null;
   let readyRetryCount = 0;
   let cachedRules = null;
+  let cachedReplaceWords = null;
   let isActive = false;
 
   function getLogic() {
@@ -34,8 +32,21 @@
     );
   }
 
+  function ensureReplaceWordsLoaded() {
+    if (cachedReplaceWords) {
+      return Promise.resolve(cachedReplaceWords);
+    }
+
+    return replaceWordsStore.getReplaceWords().then((entries) => {
+      cachedReplaceWords = entries;
+      return cachedReplaceWords;
+    });
+  }
+
   function applyTextReplacements() {
-    getLogic()?.applyTextReplacements?.();
+    ensureReplaceWordsLoaded().then((entries) => {
+      getLogic()?.applyTextReplacements?.(entries);
+    });
   }
 
   function scheduleTextReplace(delay = 200) {
@@ -65,10 +76,8 @@
       return;
     }
 
-    applyNow(DEFAULT_RULES);
-
-    chrome.storage.local.get([STORAGE_KEY], (result) => {
-      cachedRules = result[STORAGE_KEY] ?? DEFAULT_RULES;
+    store.getRules().then((rules) => {
+      cachedRules = rules;
       applyNow(cachedRules);
     });
   }
@@ -164,6 +173,19 @@
     ensureLibraryHooks();
     applyTextReplacements();
 
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area !== "local" || !changes[REPLACE_WORDS_STORAGE_KEY]) return;
+
+      const nextReplaceWords = changes[REPLACE_WORDS_STORAGE_KEY].newValue;
+      if (Array.isArray(nextReplaceWords)) {
+        cachedReplaceWords = replaceWordsStore.normalizeReplaceWords(nextReplaceWords);
+        getLogic()?.applyTextReplacements?.(cachedReplaceWords);
+      } else {
+        cachedReplaceWords = null;
+        applyTextReplacements();
+      }
+    });
+
     const observer = new MutationObserver(() => scheduleTextReplace(250));
     observer.observe(document.documentElement, {
       childList: true,
@@ -218,7 +240,21 @@
 
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== "local" || !changes[STORAGE_KEY]) return;
-      cachedRules = changes[STORAGE_KEY].newValue ?? DEFAULT_RULES;
+
+      const nextRules = changes[STORAGE_KEY].newValue;
+      if (Array.isArray(nextRules)) {
+        cachedRules = store.normalizeRules(nextRules);
+      } else {
+        cachedRules = null;
+        store.getRules().then((rules) => {
+          cachedRules = rules;
+          const logic = getLogic();
+          if (!logic) return;
+          logic.applyRulesToDocument(cachedRules);
+          scheduleReadyRetries();
+        });
+        return;
+      }
 
       const logic = getLogic();
       if (!logic) return;
@@ -261,6 +297,7 @@
 
       if (message.type === "REAPPLY") {
         cachedRules = null;
+        cachedReplaceWords = null;
         onPageChange("reapply");
         sendResponse({ ok: true });
         return true;

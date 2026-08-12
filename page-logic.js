@@ -369,19 +369,31 @@
 
   const TEXT_REPLACE_ATTRS = ["placeholder", "title", "aria-label"];
 
-  function replaceWords(text) {
+  let activeReplaceWords = [];
+
+  function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function setReplaceWords(entries) {
+    activeReplaceWords = Array.isArray(entries) ? entries : [];
+  }
+
+  function replaceWords(text, entries = activeReplaceWords) {
     if (!text) return text;
 
-    return text
-      .replace(/\bmovies\b/gi, "mdata")
-      .replace(/\bmovie\b/gi, "mdata")
-      .replace(/\bstreams\b/gi, "sdata")
-      .replace(/\bstream\b/gi, "sdata")
-      .replace(/\bepisodes\b/gi, "ee_data")
-      .replace(/\bepisode\b/gi, "ee_data")
-      .replace(/\bseries\b/gi, "ss_data")
-      .replace(/\bIPTV\b/gi, "IIPP")
-      .replace(/\bTV\b/gi, "Tdata");
+    let result = text;
+    for (const entry of entries) {
+      if (!entry || entry.enabled === false) continue;
+
+      const from = String(entry.from || "").trim();
+      if (!from) continue;
+
+      const to = entry.to == null ? "" : String(entry.to);
+      result = result.replace(new RegExp(`\\b${escapeRegExp(from)}\\b`, "gi"), to);
+    }
+
+    return result;
   }
 
   function shouldSkipTextNode(node) {
@@ -398,7 +410,7 @@
     );
   }
 
-  function applyTextReplacementsToRoot(root) {
+  function applyTextReplacementsToRoot(root, entries) {
     let count = 0;
 
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -407,7 +419,7 @@
     while (node) {
       if (!shouldSkipTextNode(node)) {
         const original = node.nodeValue;
-        const updated = replaceWords(original);
+        const updated = replaceWords(original, entries);
         if (updated !== original) {
           node.nodeValue = updated;
           count += 1;
@@ -422,7 +434,7 @@
         const original = element.getAttribute(attr);
         if (!original) return;
 
-        const updated = replaceWords(original);
+        const updated = replaceWords(original, entries);
         if (updated !== original) {
           element.setAttribute(attr, updated);
           count += 1;
@@ -433,11 +445,14 @@
     return count;
   }
 
-  function applyTextReplacements() {
+  function applyTextReplacements(entries) {
+    if (entries) setReplaceWords(entries);
+
     let count = 0;
+    const activeEntries = activeReplaceWords;
 
     walkRoots(document, (root) => {
-      count += applyTextReplacementsToRoot(root);
+      count += applyTextReplacementsToRoot(root, activeEntries);
     });
 
     return count;
@@ -448,6 +463,7 @@
     applyRulesToDocument,
     countHiddenColumns,
     applyTextReplacements,
+    setReplaceWords,
     replaceWords,
   };
 })();

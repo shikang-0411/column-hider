@@ -110,14 +110,30 @@ button.icon-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.list-panel {
+  margin-top: 8px;
+}
+
+.list-panel[hidden] {
+  display: none;
 }
 
 .list-header h2 {
   margin: 0;
 }
 
-#rules-list {
+.list-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+#rules-list,
+#replace-list {
   list-style: none;
   margin: 0;
   padding: 0;

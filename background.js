@@ -1,41 +1,9 @@
-const STORAGE_KEY = "columnRules";
+importScripts("rules-store.js", "replace-words-store.js");
 
-const DEFAULT_RULES = [
-  { id: "default-image", ariaLabel: "Image", matchType: "exact", enabled: true },
-  { id: "default-player", ariaLabel: "Player", matchType: "exact", enabled: true },
-  { id: "default-uptime", ariaLabel: "Uptime", matchType: "contains", enabled: true },
-  { id: "default-icon", ariaLabel: "Icon", matchType: "exact", enabled: true },
-  {
-    id: "default-icon-asc",
-    ariaLabel: "Icon: activate to sort column ascending",
-    matchType: "exact",
-    enabled: true,
-  },
-  {
-    id: "default-image-asc",
-    ariaLabel: "Image: activate to sort column ascending",
-    matchType: "exact",
-    enabled: true,
-  },
-  {
-    id: "default-name-asc",
-    ariaLabel: "Name: activate to sort column ascending",
-    matchType: "exact",
-    enabled: true,
-  },
-  {
-    id: "default-name-desc",
-    ariaLabel: "Name: activate to sort column descending",
-    matchType: "exact",
-    enabled: true,
-  },
-  {
-    id: "default-sdata-info-asc",
-    ariaLabel: "sdata Info: activate to sort column ascending",
-    matchType: "exact",
-    enabled: true,
-  },
-];
+const store = globalThis.TCH_RULES_STORE;
+const replaceWordsStore = globalThis.TCH_REPLACE_WORDS_STORE;
+const STORAGE_KEY = store.STORAGE_KEY;
+const REPLACE_WORDS_STORAGE_KEY = replaceWordsStore.STORAGE_KEY;
 
 const RETRY_MS = 1500;
 const RETRY_MAX = 20;
@@ -56,8 +24,7 @@ function isInjectableUrl(url) {
 }
 
 async function getStoredRules() {
-  const result = await chrome.storage.local.get(STORAGE_KEY);
-  return result[STORAGE_KEY] ?? DEFAULT_RULES;
+  return store.getRules();
 }
 
 async function injectStyles(tabId) {
@@ -86,7 +53,7 @@ async function notifyContentScript(tabId) {
   }
 }
 
-async function applyRulesToTab(tabId, rules) {
+async function applyRulesToTab(tabId, rules, replaceWords) {
   const tab = await chrome.tabs.get(tabId);
   if (!isInjectableUrl(tab.url)) {
     return { containerCount: 0, hiddenCount: 0 };
@@ -103,7 +70,7 @@ async function applyRulesToTab(tabId, rules) {
   const injections = await chrome.scripting.executeScript({
     target: { tabId, allFrames: true },
     world: "ISOLATED",
-    func: (rulesArg) => {
+    func: (rulesArg, replaceWordsArg) => {
       const logic = globalThis.TCH_PAGE_LOGIC;
       if (!logic) return { containerCount: 0, hiddenCount: 0 };
 
@@ -112,14 +79,14 @@ async function applyRulesToTab(tabId, rules) {
         return { containerCount: 0, hiddenCount: 0 };
       }
 
-      logic.applyTextReplacements?.();
+      logic.applyTextReplacements?.(replaceWordsArg ?? []);
       logic.applyRulesToDocument(rulesArg ?? []);
       return {
         containerCount: scan.containerCount,
         hiddenCount: document.querySelectorAll('[data-tch-hidden="true"]').length,
       };
     },
-    args: [rules],
+    args: [rules, replaceWords],
   });
 
   return injections.reduce(
@@ -132,8 +99,11 @@ async function applyRulesToTab(tabId, rules) {
 }
 
 async function ensureContentAndApply(tabId) {
-  const rules = await getStoredRules();
-  const result = await applyRulesToTab(tabId, rules);
+  const [rules, replaceWords] = await Promise.all([
+    getStoredRules(),
+    replaceWordsStore.getReplaceWords(),
+  ]);
+  const result = await applyRulesToTab(tabId, rules, replaceWords);
 
   if (result.containerCount === 0) {
     activeTableTabs.delete(tabId);
@@ -196,6 +166,14 @@ function handleNavigation(details) {
   queueApply(details.tabId);
 }
 
+function seedStores() {
+  store.ensureRulesSeeded().catch(() => {});
+  replaceWordsStore.ensureReplaceWordsSeeded().catch(() => {});
+}
+
+chrome.runtime.onInstalled.addListener(seedStores);
+seedStores();
+
 chrome.webNavigation.onCompleted.addListener(handleNavigation);
 chrome.webNavigation.onHistoryStateUpdated.addListener(handleNavigation);
 
@@ -207,7 +185,8 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area !== "local" || !changes[STORAGE_KEY]) return;
+  if (area !== "local") return;
+  if (!changes[STORAGE_KEY] && !changes[REPLACE_WORDS_STORAGE_KEY]) return;
 
   chrome.tabs.query({}, (tabs) => {
     tabs.forEach((tab) => {

@@ -46,12 +46,81 @@
     <section class="list-section">
       <div class="list-header">
         <h2>Active rules</h2>
-        <button type="button" id="reset-btn" class="link" title="Restore default rules">
-          Reset defaults
-        </button>
+        <div class="list-header-actions">
+          <button type="button" id="rules-view-btn" class="link" aria-expanded="false">
+            View
+          </button>
+          <button
+            type="button"
+            id="export-btn"
+            class="link"
+            title="Download current rules as rules.json for sharing"
+          >
+            Export rules.json
+          </button>
+          <button type="button" id="reset-btn" class="link" title="Restore rules from rules.json">
+            Reset defaults
+          </button>
+        </div>
       </div>
-      <ul id="rules-list"></ul>
-      <p id="empty-state" class="empty" hidden>No rules yet. Add one above.</p>
+      <div id="rules-panel" class="list-panel" hidden>
+        <ul id="rules-list"></ul>
+        <p id="empty-state" class="empty" hidden>No rules yet. Add one above.</p>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <h2 id="replace-form-title">Add replace word</h2>
+      <form id="replace-form">
+        <input type="hidden" id="replace-id" />
+        <label>
+          From
+          <input type="text" id="replace-from" placeholder="e.g. Thanks" required />
+        </label>
+        <label>
+          To
+          <input type="text" id="replace-to" placeholder="e.g. Ty" required />
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="replace-enabled" checked />
+          Enabled
+        </label>
+        <div class="form-actions">
+          <button type="submit" id="replace-submit-btn">Add replace word</button>
+          <button type="button" id="replace-cancel-btn" class="secondary" hidden>Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="list-section">
+      <div class="list-header">
+        <h2>Replace words</h2>
+        <div class="list-header-actions">
+          <button type="button" id="replace-view-btn" class="link" aria-expanded="false">
+            View
+          </button>
+          <button
+            type="button"
+            id="replace-export-btn"
+            class="link"
+            title="Download current replace words as replace-words.json for sharing"
+          >
+            Export replace-words.json
+          </button>
+          <button
+            type="button"
+            id="replace-reset-btn"
+            class="link"
+            title="Restore replace words from replace-words.json"
+          >
+            Reset defaults
+          </button>
+        </div>
+      </div>
+      <div id="replace-panel" class="list-panel" hidden>
+        <ul id="replace-list"></ul>
+        <p id="replace-empty-state" class="empty" hidden>No replace words yet. Add one above.</p>
+      </div>
     </section>
 
     <footer>
@@ -60,6 +129,8 @@
       <button type="button" id="apply-btn">Re-apply on current tab</button>
     </footer>
 
+    <script src="rules-store.js"></script>
+    <script src="replace-words-store.js"></script>
     <script src="popup.js"></script>
     <script src="popup-tab.js"></script>
   </body>

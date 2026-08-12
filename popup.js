@@ -1,46 +1,5 @@
-const STORAGE_KEY = "columnRules";
-
-const DEFAULT_RULES = [
-  { id: crypto.randomUUID(), ariaLabel: "Image", matchType: "exact", enabled: true },
-  { id: crypto.randomUUID(), ariaLabel: "Player", matchType: "exact", enabled: true },
-  {
-    id: crypto.randomUUID(),
-    ariaLabel: "Uptime",
-    matchType: "contains",
-    enabled: true,
-  },
-  { id: crypto.randomUUID(), ariaLabel: "Icon", matchType: "exact", enabled: true },
-  {
-    id: crypto.randomUUID(),
-    ariaLabel: "Icon: activate to sort column ascending",
-    matchType: "exact",
-    enabled: true,
-  },
-  {
-    id: crypto.randomUUID(),
-    ariaLabel: "Image: activate to sort column ascending",
-    matchType: "exact",
-    enabled: true,
-  },
-  {
-    id: crypto.randomUUID(),
-    ariaLabel: "Name: activate to sort column ascending",
-    matchType: "exact",
-    enabled: true,
-  },
-  {
-    id: crypto.randomUUID(),
-    ariaLabel: "Name: activate to sort column descending",
-    matchType: "exact",
-    enabled: true,
-  },
-  {
-    id: crypto.randomUUID(),
-    ariaLabel: "sdata Info: activate to sort column ascending",
-    matchType: "exact",
-    enabled: true,
-  },
-];
+const store = globalThis.TCH_RULES_STORE;
+const replaceWordsStore = globalThis.TCH_REPLACE_WORDS_STORE;
 
 const form = document.getElementById("rule-form");
 const formTitle = document.getElementById("form-title");
@@ -53,6 +12,25 @@ const cancelBtn = document.getElementById("cancel-btn");
 const rulesList = document.getElementById("rules-list");
 const emptyState = document.getElementById("empty-state");
 const resetBtn = document.getElementById("reset-btn");
+const exportBtn = document.getElementById("export-btn");
+const rulesViewBtn = document.getElementById("rules-view-btn");
+const rulesPanel = document.getElementById("rules-panel");
+
+const replaceForm = document.getElementById("replace-form");
+const replaceFormTitle = document.getElementById("replace-form-title");
+const replaceIdInput = document.getElementById("replace-id");
+const replaceFromInput = document.getElementById("replace-from");
+const replaceToInput = document.getElementById("replace-to");
+const replaceEnabledInput = document.getElementById("replace-enabled");
+const replaceSubmitBtn = document.getElementById("replace-submit-btn");
+const replaceCancelBtn = document.getElementById("replace-cancel-btn");
+const replaceList = document.getElementById("replace-list");
+const replaceEmptyState = document.getElementById("replace-empty-state");
+const replaceResetBtn = document.getElementById("replace-reset-btn");
+const replaceExportBtn = document.getElementById("replace-export-btn");
+const replaceViewBtn = document.getElementById("replace-view-btn");
+const replacePanel = document.getElementById("replace-panel");
+
 const scanBtn = document.getElementById("scan-btn");
 const scanResult = document.getElementById("scan-result");
 const applyBtn = document.getElementById("apply-btn");
@@ -67,6 +45,7 @@ const RESTRICTED_PREFIXES = [
 ];
 
 let rules = [];
+let replaceWords = [];
 
 function isRestrictedUrl(url) {
   if (!url) return true;
@@ -100,17 +79,11 @@ function showScanResult(text) {
 }
 
 function getRules() {
-  return new Promise((resolve) => {
-    chrome.storage.local.get([STORAGE_KEY], (result) => {
-      resolve(result[STORAGE_KEY] ?? null);
-    });
-  });
+  return store.getRules();
 }
 
 function saveRules(nextRules) {
-  return new Promise((resolve) => {
-    chrome.storage.local.set({ [STORAGE_KEY]: nextRules }, resolve);
-  });
+  return store.saveRules(nextRules);
 }
 
 function resetForm() {
@@ -226,11 +199,165 @@ form.addEventListener("submit", async (event) => {
 
 cancelBtn.addEventListener("click", resetForm);
 
+function togglePanel(panel, button) {
+  const willShow = panel.hidden;
+  panel.hidden = !willShow;
+  button.textContent = willShow ? "Hide" : "View";
+  button.setAttribute("aria-expanded", String(willShow));
+}
+
+rulesViewBtn.addEventListener("click", () => togglePanel(rulesPanel, rulesViewBtn));
+
 resetBtn.addEventListener("click", async () => {
-  rules = DEFAULT_RULES.map((rule) => ({ ...rule, id: crypto.randomUUID() }));
-  await saveRules(rules);
+  rules = await store.resetToBundledRules();
   resetForm();
   renderRules();
+});
+
+exportBtn.addEventListener("click", () => {
+  const blob = new Blob([`${JSON.stringify(rules, null, 2)}\n`], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "rules.json";
+  anchor.click();
+  URL.revokeObjectURL(url);
+});
+
+function resetReplaceForm() {
+  replaceIdInput.value = "";
+  replaceFromInput.value = "";
+  replaceToInput.value = "";
+  replaceEnabledInput.checked = true;
+  replaceFormTitle.textContent = "Add replace word";
+  replaceSubmitBtn.textContent = "Add replace word";
+  replaceCancelBtn.hidden = true;
+}
+
+function startReplaceEdit(entry) {
+  replaceIdInput.value = entry.id;
+  replaceFromInput.value = entry.from;
+  replaceToInput.value = entry.to;
+  replaceEnabledInput.checked = entry.enabled;
+  replaceFormTitle.textContent = "Edit replace word";
+  replaceSubmitBtn.textContent = "Save changes";
+  replaceCancelBtn.hidden = false;
+  replaceFromInput.focus();
+}
+
+function renderReplaceWords() {
+  replaceList.innerHTML = "";
+
+  if (replaceWords.length === 0) {
+    replaceEmptyState.hidden = false;
+    return;
+  }
+
+  replaceEmptyState.hidden = true;
+
+  replaceWords.forEach((entry) => {
+    const li = document.createElement("li");
+    li.className = `rule-item${entry.enabled ? "" : " disabled"}`;
+
+    const main = document.createElement("div");
+    main.className = "rule-main";
+
+    const label = document.createElement("div");
+    label.className = "rule-label";
+    label.textContent = `"${entry.from}" → "${entry.to}"`;
+
+    const meta = document.createElement("div");
+    meta.className = "rule-meta";
+    meta.textContent = entry.enabled ? "Enabled" : "Disabled";
+
+    main.append(label, meta);
+
+    const actions = document.createElement("div");
+    actions.className = "rule-actions";
+
+    const toggleBtn = document.createElement("button");
+    toggleBtn.type = "button";
+    toggleBtn.className = "icon-btn secondary";
+    toggleBtn.textContent = entry.enabled ? "Disable" : "Enable";
+    toggleBtn.addEventListener("click", async () => {
+      replaceWords = replaceWords.map((item) =>
+        item.id === entry.id ? { ...item, enabled: !item.enabled } : item
+      );
+      await replaceWordsStore.saveReplaceWords(replaceWords);
+      renderReplaceWords();
+    });
+
+    const editBtn = document.createElement("button");
+    editBtn.type = "button";
+    editBtn.className = "icon-btn secondary";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", () => startReplaceEdit(entry));
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "icon-btn danger";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", async () => {
+      replaceWords = replaceWords.filter((item) => item.id !== entry.id);
+      await replaceWordsStore.saveReplaceWords(replaceWords);
+      if (replaceIdInput.value === entry.id) resetReplaceForm();
+      renderReplaceWords();
+    });
+
+    actions.append(toggleBtn, editBtn, deleteBtn);
+    li.append(main, actions);
+    replaceList.appendChild(li);
+  });
+}
+
+replaceForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const from = replaceFromInput.value.trim();
+  const to = replaceToInput.value.trim();
+  if (!from) return;
+
+  const payload = {
+    id: replaceIdInput.value || crypto.randomUUID(),
+    from,
+    to,
+    enabled: replaceEnabledInput.checked,
+  };
+
+  const existingIndex = replaceWords.findIndex((item) => item.id === payload.id);
+  if (existingIndex >= 0) {
+    replaceWords[existingIndex] = payload;
+  } else {
+    replaceWords.push(payload);
+  }
+
+  await replaceWordsStore.saveReplaceWords(replaceWords);
+  resetReplaceForm();
+  renderReplaceWords();
+});
+
+replaceCancelBtn.addEventListener("click", resetReplaceForm);
+
+replaceViewBtn.addEventListener("click", () => togglePanel(replacePanel, replaceViewBtn));
+
+replaceResetBtn.addEventListener("click", async () => {
+  replaceWords = await replaceWordsStore.resetToBundledReplaceWords();
+  resetReplaceForm();
+  renderReplaceWords();
+});
+
+replaceExportBtn.addEventListener("click", () => {
+  const blob = new Blob([`${JSON.stringify(replaceWords, null, 2)}\n`], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "replace-words.json";
+  anchor.click();
+  URL.revokeObjectURL(url);
 });
 
 scanBtn.addEventListener("click", async () => {
@@ -285,14 +412,14 @@ applyBtn.addEventListener("click", async () => {
 });
 
 async function init() {
-  const stored = await getRules();
-  rules = stored ?? DEFAULT_RULES;
-
-  if (!stored) {
-    await saveRules(rules);
-  }
-
+  const [nextRules, nextReplaceWords] = await Promise.all([
+    getRules(),
+    replaceWordsStore.getReplaceWords(),
+  ]);
+  rules = nextRules;
+  replaceWords = nextReplaceWords;
   renderRules();
+  renderReplaceWords();
 }
 
 init();

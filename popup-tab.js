@@ -41,13 +41,13 @@ async function ensureContentScript(tabId) {
   });
 }
 
-async function runInAllFrames(tabId, action, rules = null) {
+async function runInAllFrames(tabId, action, rules = null, replaceWords = null) {
   await injectPageLogic(tabId);
 
   const injections = await chrome.scripting.executeScript({
     target: { tabId, allFrames: true },
     world: "ISOLATED",
-    func: (actionName, rulesArg) => {
+    func: (actionName, rulesArg, replaceWordsArg) => {
       const logic = globalThis.TCH_PAGE_LOGIC;
       if (!logic) {
         return {
@@ -62,7 +62,7 @@ async function runInAllFrames(tabId, action, rules = null) {
       }
 
       if (actionName === "apply") {
-        logic.applyTextReplacements?.();
+        logic.applyTextReplacements?.(replaceWordsArg ?? []);
         return {
           ok: true,
           hidden: logic.applyRulesToDocument(rulesArg ?? []),
@@ -72,7 +72,7 @@ async function runInAllFrames(tabId, action, rules = null) {
 
       return null;
     },
-    args: [action, rules],
+    args: [action, rules, replaceWords],
   });
 
   return injections.map((entry) => ({
@@ -132,6 +132,8 @@ async function runTabAction(action) {
   }
 
   const rules = action === "apply" ? await getRules() : null;
+  const replaceWords =
+    action === "apply" ? await globalThis.TCH_REPLACE_WORDS_STORE.getReplaceWords() : null;
 
   if (action === "apply") {
     try {
@@ -144,14 +146,14 @@ async function runTabAction(action) {
     }
   }
 
-  let frameResults = await runInAllFrames(tab.id, action, rules);
+  let frameResults = await runInAllFrames(tab.id, action, rules, replaceWords);
 
   if (action === "scan") {
     let merged = mergeScanResults(frameResults);
 
     if (merged.containerCount === 0) {
       await ensureContentScript(tab.id);
-      frameResults = await runInAllFrames(tab.id, action, null);
+      frameResults = await runInAllFrames(tab.id, action, null, null);
       merged = mergeScanResults(frameResults);
     }
 
@@ -163,6 +165,6 @@ async function runTabAction(action) {
   }
 
   await ensureContentScript(tab.id);
-  frameResults = await runInAllFrames(tab.id, action, rules);
+  frameResults = await runInAllFrames(tab.id, action, rules, replaceWords);
   return frameResults.some(({ result }) => result?.ok) ? { ok: true } : { ok: false };
 }
