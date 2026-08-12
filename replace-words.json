@@ -1,12 +1,68 @@
 [
-  { "id": "rw-movies", "from": "movies", "to": "mdata", "enabled": true },
-  { "id": "rw-movie", "from": "movie", "to": "mdata", "enabled": true },
-  { "id": "rw-streams", "from": "streams", "to": "sdata", "enabled": true },
-  { "id": "rw-stream", "from": "stream", "to": "sdata", "enabled": true },
-  { "id": "rw-episodes", "from": "episodes", "to": "ee_data", "enabled": true },
-  { "id": "rw-episode", "from": "episode", "to": "ee_data", "enabled": true },
-  { "id": "rw-series", "from": "series", "to": "ss_data", "enabled": true },
-  { "id": "rw-iptv", "from": "IPTV", "to": "IIPP", "enabled": true },
-  { "id": "rw-vod", "from": "VOD", "to": "VD", "enabled": true },
-  { "id": "rw-tv", "from": "TV", "to": "Tdata", "enabled": true }
+  {
+    "id": "rw-movies",
+    "from": "movies",
+    "to": "mdata",
+    "enabled": true
+  },
+  {
+    "id": "rw-movie",
+    "from": "movie",
+    "to": "mdata",
+    "enabled": true
+  },
+  {
+    "id": "rw-streams",
+    "from": "streams",
+    "to": "sdata",
+    "enabled": true
+  },
+  {
+    "id": "rw-stream",
+    "from": "stream",
+    "to": "sdata",
+    "enabled": true
+  },
+  {
+    "id": "rw-episodes",
+    "from": "episodes",
+    "to": "ee_data",
+    "enabled": true
+  },
+  {
+    "id": "rw-episode",
+    "from": "episode",
+    "to": "ee_data",
+    "enabled": true
+  },
+  {
+    "id": "rw-series",
+    "from": "series",
+    "to": "ss_data",
+    "enabled": true
+  },
+  {
+    "id": "rw-iptv",
+    "from": "IPTV",
+    "to": "IIPP",
+    "enabled": true
+  },
+  {
+    "id": "rw-vod",
+    "from": "VOD",
+    "to": "VD",
+    "enabled": true
+  },
+  {
+    "id": "rw-tv",
+    "from": "TV",
+    "to": "Tdata",
+    "enabled": true
+  },
+  {
+    "id": "ea681f37-2a63-439f-8107-0da313e2a47a",
+    "from": "dollar",
+    "to": "$",
+    "enabled": true
+  }
 ]

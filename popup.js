@@ -24,6 +24,7 @@ const replaceForm = document.getElementById("replace-form");
 const replaceFromInput = document.getElementById("replace-from");
 const replaceToInput = document.getElementById("replace-to");
 const replaceEnabledInput = document.getElementById("replace-enabled");
+const replaceExportBtn = document.getElementById("replace-export-btn");
 
 const scanBtn = document.getElementById("scan-btn");
 const scanResult = document.getElementById("scan-result");
@@ -254,6 +255,18 @@ exportBtn.addEventListener("click", () => {
   const anchor = document.createElement("a");
   anchor.href = url;
   anchor.download = "rules.json";
+  anchor.click();
+  URL.revokeObjectURL(url);
+});
+
+replaceExportBtn.addEventListener("click", () => {
+  const blob = new Blob([`${JSON.stringify(replaceWords, null, 2)}\n`], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "replace-words.json";
   anchor.click();
   URL.revokeObjectURL(url);
 });
