@@ -58,5 +58,11 @@
     "from": "TV",
     "to": "Tdata",
     "enabled": true
+  },
+  {
+    "id": "rw-dollars",
+    "from": "dollars",
+    "to": "$$$",
+    "enabled": true
   }
 ]

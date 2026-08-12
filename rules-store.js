@@ -15,7 +15,9 @@
   }
 
   async function loadBundledRules() {
-    const response = await fetch(chrome.runtime.getURL("rules.json"));
+    const response = await fetch(chrome.runtime.getURL("rules.json"), {
+      cache: "no-store",
+    });
     if (!response.ok) {
       throw new Error(`Failed to load rules.json (${response.status})`);
     }

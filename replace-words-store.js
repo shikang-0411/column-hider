@@ -15,7 +15,9 @@
   }
 
   async function loadBundledReplaceWords() {
-    const response = await fetch(chrome.runtime.getURL("replace-words.json"));
+    const response = await fetch(chrome.runtime.getURL("replace-words.json"), {
+      cache: "no-store",
+    });
     if (!response.ok) {
       throw new Error(`Failed to load replace-words.json (${response.status})`);
     }
