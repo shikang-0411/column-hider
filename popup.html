@@ -8,118 +8,92 @@
   </head>
   <body>
     <header>
-      <h1>Column Rules</h1>
-      <p class="subtitle">Hide table columns by <code>aria-label</code></p>
+      <div class="list-header">
+        <h1>Column Rules</h1>
+        <button
+          type="button"
+          id="reset-all-btn"
+          class="link"
+          title="Restore rules and replace words from bundled JSON files"
+        >
+          Reset
+        </button>
+      </div>
     </header>
 
-    <section class="form-section">
-      <h2 id="form-title">Add rule</h2>
-      <form id="rule-form">
-        <input type="hidden" id="rule-id" />
-        <label>
-          Aria-label
-          <input
-            type="text"
-            id="aria-label"
-            placeholder='e.g. "Player" or "Uptime"'
-            required
-          />
-        </label>
-        <label>
-          Match type
-          <select id="match-type">
-            <option value="exact">Exact match</option>
-            <option value="contains">Contains</option>
-          </select>
-        </label>
-        <label class="checkbox-row">
-          <input type="checkbox" id="enabled" checked />
-          Enabled
-        </label>
-        <div class="form-actions">
-          <button type="submit" id="submit-btn">Add rule</button>
-          <button type="button" id="cancel-btn" class="secondary" hidden>Cancel</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="list-section">
-      <div class="list-header">
-        <h2>Active rules</h2>
-        <div class="list-header-actions">
-          <button type="button" id="rules-view-btn" class="link" aria-expanded="false">
-            View
-          </button>
-          <button
-            type="button"
-            id="export-btn"
-            class="link"
-            title="Download current rules as rules.json for sharing"
-          >
-            Export rules.json
-          </button>
-          <button type="button" id="reset-btn" class="link" title="Restore rules from rules.json">
-            Reset defaults
-          </button>
-        </div>
+    <section class="form-section" id="rule-section">
+      <div class="list-header section-toggle" id="rule-section-toggle" role="button" tabindex="0" aria-expanded="false">
+        <h2 id="form-title">Rules</h2>
       </div>
-      <div id="rules-panel" class="list-panel" hidden>
-        <ul id="rules-list"></ul>
-        <p id="empty-state" class="empty" hidden>No rules yet. Add one above.</p>
+      <div id="rule-form-body" class="section-body" hidden>
+        <form id="rule-form">
+          <input type="hidden" id="rule-id" />
+          <label>
+            Aria-label
+            <input
+              type="text"
+              id="aria-label"
+              placeholder='e.g. "Player" or "Uptime"'
+              required
+            />
+          </label>
+          <label>
+            Match type
+            <select id="match-type">
+              <option value="exact">Exact match</option>
+              <option value="contains">Contains</option>
+            </select>
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="enabled" checked />
+            Enabled
+          </label>
+          <div class="form-actions">
+            <button type="submit" id="submit-btn">Add rule</button>
+            <button type="button" id="cancel-btn" class="secondary" hidden>Cancel</button>
+            <button type="button" id="rules-view-btn" class="link" aria-expanded="false">
+              View
+            </button>
+            <button
+              type="button"
+              id="export-btn"
+              class="link"
+              title="Download current rules as rules.json for sharing"
+            >
+              Export
+            </button>
+          </div>
+        </form>
       </div>
     </section>
 
-    <section class="form-section">
-      <h2 id="replace-form-title">Add replace word</h2>
-      <form id="replace-form">
-        <input type="hidden" id="replace-id" />
-        <label>
-          From
-          <input type="text" id="replace-from" placeholder="e.g. Thanks" required />
-        </label>
-        <label>
-          To
-          <input type="text" id="replace-to" placeholder="e.g. Ty" required />
-        </label>
-        <label class="checkbox-row">
-          <input type="checkbox" id="replace-enabled" checked />
-          Enabled
-        </label>
-        <div class="form-actions">
-          <button type="submit" id="replace-submit-btn">Add replace word</button>
-          <button type="button" id="replace-cancel-btn" class="secondary" hidden>Cancel</button>
-        </div>
-      </form>
+    <section id="rules-panel" class="list-section" hidden>
+      <ul id="rules-list"></ul>
+      <p id="empty-state" class="empty" hidden>No rules yet. Add one above.</p>
     </section>
 
-    <section class="list-section">
-      <div class="list-header">
-        <h2>Replace words</h2>
-        <div class="list-header-actions">
-          <button type="button" id="replace-view-btn" class="link" aria-expanded="false">
-            View
-          </button>
-          <button
-            type="button"
-            id="replace-export-btn"
-            class="link"
-            title="Download current replace words as replace-words.json for sharing"
-          >
-            Export replace-words.json
-          </button>
-          <button
-            type="button"
-            id="replace-reset-btn"
-            class="link"
-            title="Restore replace words from replace-words.json"
-          >
-            Reset defaults
-          </button>
-        </div>
+    <section class="form-section" id="replace-section">
+      <div class="list-header section-toggle" id="replace-section-toggle" role="button" tabindex="0" aria-expanded="false">
+        <h2 id="replace-form-title">Words</h2>
       </div>
-      <div id="replace-panel" class="list-panel" hidden>
-        <ul id="replace-list"></ul>
-        <p id="replace-empty-state" class="empty" hidden>No replace words yet. Add one above.</p>
+      <div id="replace-form-body" class="section-body" hidden>
+        <form id="replace-form">
+          <label>
+            From
+            <input type="text" id="replace-from" placeholder="e.g. Thanks" required />
+          </label>
+          <label>
+            To
+            <input type="text" id="replace-to" placeholder="e.g. Ty" required />
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="replace-enabled" checked />
+            Enabled
+          </label>
+          <div class="form-actions">
+            <button type="submit" id="replace-submit-btn">Add replace word</button>
+          </div>
+        </form>
       </div>
     </section>
 

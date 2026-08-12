@@ -13,20 +13,16 @@ body {
 }
 
 header h1 {
-  margin: 0 0 4px;
+  margin: 0;
   font-size: 18px;
 }
 
-.subtitle {
-  margin: 0 0 16px;
-  color: #5f6368;
+header {
+  margin-bottom: 12px;
 }
 
-.subtitle code {
-  font-size: 12px;
-  background: #eef1f5;
-  padding: 1px 4px;
-  border-radius: 4px;
+header .list-header {
+  margin-bottom: 0;
 }
 
 section {
@@ -37,9 +33,34 @@ section {
   margin-bottom: 12px;
 }
 
+.form-section {
+  padding: 8px 12px;
+}
+
+.form-section .list-header {
+  margin-bottom: 0;
+}
+
 h2 {
   margin: 0 0 10px;
   font-size: 14px;
+}
+
+.form-section .list-header h2 {
+  margin: 0;
+}
+
+.section-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.section-body {
+  margin-top: 10px;
+}
+
+.section-body[hidden] {
+  display: none;
 }
 
 label {
@@ -71,7 +92,13 @@ select {
 
 .form-actions {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+
+.form-actions .link {
+  margin-left: 2px;
 }
 
 button {
@@ -111,12 +138,14 @@ button.icon-btn {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  margin-bottom: 8px;
 }
 
 .list-panel {
-  margin-top: 8px;
+  margin-top: 0;
 }
 
+.list-section[hidden],
 .list-panel[hidden] {
   display: none;
 }
