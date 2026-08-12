@@ -24,6 +24,12 @@
     "enabled": true
   },
   {
+    "id": "rw-channel",
+    "from": "channel",
+    "to": "cdata",
+    "enabled": true
+  },
+  {
     "id": "rw-episodes",
     "from": "episodes",
     "to": "ee_data",
