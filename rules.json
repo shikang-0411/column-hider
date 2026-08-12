@@ -12,12 +12,6 @@
     "enabled": true
   },
   {
-    "id": "671c36d7-99b3-4860-86bd-aac3f9c0e0ed",
-    "ariaLabel": "Uptime",
-    "matchType": "contains",
-    "enabled": true
-  },
-  {
     "id": "042a9e58-919b-41d4-a02e-e30154bca391",
     "ariaLabel": "Icon",
     "matchType": "exact",
