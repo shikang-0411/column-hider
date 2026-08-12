@@ -64,5 +64,17 @@
     "from": "TV",
     "to": "Tdata",
     "enabled": true
+  },
+  {
+    "id": "rw-w-folder",
+    "from": "Watch Folders",
+    "to": "W Folders",
+    "enabled": true
+  },
+  {
+    "id": "rw-plex",
+    "from": "Plex",
+    "to": "Plx",
+    "enabled": true
   }
 ]
