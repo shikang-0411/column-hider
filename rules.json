@@ -52,11 +52,5 @@
     "ariaLabel": "sdata Info: activate to sort column ascending",
     "matchType": "exact",
     "enabled": true
-  },
-  {
-    "id": "b553a8fa-dfcf-4598-b591-66ef74c2cfd9",
-    "ariaLabel": "my-calendar",
-    "matchType": "exact",
-    "enabled": true
   }
 ]
